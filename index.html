@@ -3,562 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatApp - Ngobrol dengan Teman</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>">
+    <title>ChatApp Lite</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        :root {
-            --primary-color: #25D366;
-            --secondary-color: #128C7E;
-            --background-color: #f0f2f5;
-            --message-sent: #d9fdd3;
-            --message-received: #ffffff;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #128C7E; height: 100vh; display: flex; justify-content: center; align-items: center; }
         
         .chat-container {
-            width: 95%;
-            max-width: 400px;
-            height: 90vh;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            width: 100%; max-width: 400px; height: 100vh; 
+            background: white; display: flex; flex-direction: column;
         }
         
         /* Header */
-        .chat-header {
-            background: var(--primary-color);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
+        .header {
+            background: #075E54; color: white; padding: 15px; text-align: center;
         }
         
-        .chat-title {
-            font-size: 1.5em;
-            font-weight: bold;
+        /* Login */
+        .login {
+            padding: 15px; background: #ddd; display: flex; gap: 10px;
         }
+        .login input { flex: 1; padding: 10px; border: 1px solid #ccc; }
+        .login button { padding: 10px 15px; background: #25D366; color: white; border: none; }
         
-        .online-count {
-            font-size: 0.9em;
-            opacity: 0.9;
-            margin-top: 5px;
+        /* Messages */
+        .messages {
+            flex: 1; padding: 10px; overflow-y: auto; background: #e5ddd5;
         }
-        
-        /* Login Section */
-        .login-section {
-            padding: 20px;
-            background: var(--background-color);
-            display: flex;
-            gap: 10px;
-        }
-        
-        .name-input {
-            flex: 1;
-            padding: 12px 15px;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            outline: none;
-        }
-        
-        .login-btn {
-            padding: 12px 20px;
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        
-        .login-btn:hover {
-            background: #0d6e5f;
-            transform: translateY(-2px);
-        }
-        
-        /* Messages Area */
-        .messages-container {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background: #efeae2;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2300a884' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
-        
         .message {
-            max-width: 80%;
-            padding: 12px 16px;
-            margin-bottom: 15px;
-            border-radius: 18px;
-            position: relative;
-            word-wrap: break-word;
-            animation: messageAppear 0.3s ease-out;
+            max-width: 80%; padding: 8px 12px; margin: 5px 0; border-radius: 8px;
         }
+        .received { background: white; align-self: flex-start; }
+        .sent { background: #dcf8c6; align-self: flex-end; margin-left: auto; }
+        .time { font-size: 11px; color: #999; text-align: right; margin-top: 2px; }
         
-        @keyframes messageAppear {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Input */
+        .input {
+            padding: 10px; background: #ddd; display: flex; gap: 10px;
         }
-        
-        .message.received {
-            background: var(--message-received);
-            align-self: flex-start;
-            border-bottom-left-radius: 5px;
-        }
-        
-        .message.sent {
-            background: var(--message-sent);
-            align-self: flex-end;
-            margin-left: auto;
-            border-bottom-right-radius: 5px;
-        }
-        
-        .message-sender {
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: var(--secondary-color);
-        }
-        
-        .message-time {
-            font-size: 11px;
-            color: #999;
-            text-align: right;
-            margin-top: 5px;
-        }
-        
-        .system-message {
-            text-align: center;
-            color: #666;
-            font-size: 12px;
-            margin: 10px 0;
-            font-style: italic;
-        }
-        
-        /* Input Area */
-        .input-container {
-            padding: 15px;
-            background: var(--background-color);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .message-input {
-            flex: 1;
-            padding: 12px 18px;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            outline: none;
-            background: white;
-        }
-        
-        .send-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .send-btn:hover {
-            background: var(--secondary-color);
-            transform: scale(1.1);
-        }
-        
-        .send-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .input input { flex: 1; padding: 10px; border: 1px solid #ccc; }
+        .input button { padding: 10px 15px; background: #25D366; color: white; border: none; }
         
         /* Notification */
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--primary-color);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            display: none;
-            z-index: 1000;
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        .notification.show {
-            display: block;
-        }
-        
-        /* Responsive */
-        @media (max-width: 480px) {
-            .chat-container {
-                width: 100%;
-                height: 100vh;
-                border-radius: 0;
-            }
+        .notif {
+            position: fixed; bottom: 10px; right: 10px; background: #25D366; 
+            color: white; padding: 10px; border-radius: 5px; display: none;
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
-        <!-- Header -->
-        <div class="chat-header">
-            <div class="chat-title">💬 ChatApp</div>
-            <div class="online-count" id="onlineCount">0 orang online</div>
+        <div class="header">
+            <h2>💬 ChatApp Lite</h2>
+            <div id="onlineCount">0 online</div>
         </div>
         
-        <!-- Login Section -->
-        <div class="login-section" id="loginSection">
-            <input type="text" class="name-input" id="nameInput" placeholder="Masukkan nama kamu..." maxlength="20">
-            <button class="login-btn" id="loginBtn">Mulai Chat</button>
+        <div class="login" id="loginSection">
+            <input type="text" id="nameInput" placeholder="Nama kamu">
+            <button id="loginBtn">Mulai</button>
         </div>
         
-        <!-- Messages Area -->
-        <div class="messages-container" id="messagesContainer">
-            <div class="system-message" id="welcomeMessage">
-                Selamat datang! Masukkan nama untuk mulai mengobrol dengan teman-teman.
+        <div class="messages" id="messages">
+            <div class="message received">
+                Selamat datang! Masukkan nama untuk mulai chat.
+                <div class="time">Sekarang</div>
             </div>
         </div>
         
-        <!-- Input Area -->
-        <div class="input-container">
-            <input type="text" class="message-input" id="messageInput" placeholder="Ketik pesan..." disabled>
-            <button class="send-btn" id="sendBtn" disabled>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-            </button>
+        <div class="input">
+            <input type="text" id="messageInput" placeholder="Ketik pesan..." disabled>
+            <button id="sendBtn" disabled>Kirim</button>
         </div>
     </div>
     
-    <!-- Notification -->
-    <div class="notification" id="notification">
-        💬 Pesan baru dari <span id="notificationSender">Teman</span>
-    </div>
-    
+    <div class="notif" id="notif">Pesan baru!</div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Elements
-            const nameInput = document.getElementById('nameInput');
-            const loginBtn = document.getElementById('loginBtn');
-            const messageInput = document.getElementById('messageInput');
-            const sendBtn = document.getElementById('sendBtn');
-            const messagesContainer = document.getElementById('messagesContainer');
-            const notification = document.getElementById('notification');
-            const notificationSender = document.getElementById('notificationSender');
-            const onlineCount = document.getElementById('onlineCount');
-            const welcomeMessage = document.getElementById('welcomeMessage');
+        // Simple chat functionality
+        let currentUser = null;
+        
+        // Login function
+        document.getElementById('loginBtn').onclick = function() {
+            const name = document.getElementById('nameInput').value.trim();
+            if (!name) return alert('Masukkan nama!');
             
-            // App state
-            let currentUser = null;
-            let users = [];
-            let messages = [];
+            currentUser = name;
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('messageInput').disabled = false;
+            document.getElementById('sendBtn').disabled = false;
             
-            // Storage keys
-            const STORAGE_KEY = 'chatapp_data';
-            const USER_KEY = 'chatapp_current_user';
+            addMessage('System', `${name} bergabung chat!`);
+        };
+        
+        // Send message function
+        document.getElementById('sendBtn').onclick = sendMessage;
+        document.getElementById('messageInput').onkeypress = function(e) {
+            if (e.key === 'Enter') sendMessage();
+        };
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text || !currentUser) return;
             
-            // Get data from localStorage
-            function getData() {
-                const data = localStorage.getItem(STORAGE_KEY);
-                return data ? JSON.parse(data) : { users: [], messages: [] };
-            }
+            addMessage(currentUser, text);
+            input.value = '';
             
-            // Save data to localStorage
-            function saveData(data) {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-            }
+            // Auto reply after 1-3 seconds
+            setTimeout(() => {
+                const replies = ['Oke', 'Haha iya', 'Gitu ya', 'Wah seru', 'Lagi apa?'];
+                const randomReply = replies[Math.floor(Math.random() * replies.length)];
+                addMessage('Teman', randomReply);
+                showNotification();
+            }, 1000 + Math.random() * 2000);
+        }
+        
+        function addMessage(sender, text) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            const isOwn = sender === currentUser;
             
-            // Save current user
-            function saveCurrentUser(user) {
-                localStorage.setItem(USER_KEY, JSON.stringify(user));
-            }
+            messageDiv.className = `message ${isOwn ? 'sent' : 'received'}`;
+            messageDiv.innerHTML = `
+                ${text}
+                <div class="time">${getTime()}</div>
+            `;
             
-            // Get current user
-            function getCurrentUser() {
-                const user = localStorage.getItem(USER_KEY);
-                return user ? JSON.parse(user) : null;
-            }
-            
-            // Check for existing user
-            const savedUser = getCurrentUser();
-            if (savedUser) {
-                loginUser(savedUser);
-            }
-            
-            // Login button event
-            loginBtn.addEventListener('click', function() {
-                const name = nameInput.value.trim();
-                if (name === '') {
-                    alert('Masukkan nama dulu ya!');
-                    return;
-                }
-                
-                const user = {
-                    id: Date.now().toString(),
-                    name: name,
-                    lastSeen: new Date()
-                };
-                
-                loginUser(user);
-            });
-            
-            // Enter key in name input
-            nameInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    loginBtn.click();
-                }
-            });
-            
-            // Login user function
-            function loginUser(user) {
-                currentUser = user;
-                
-                // Update UI
-                nameInput.disabled = true;
-                loginBtn.disabled = true;
-                messageInput.disabled = false;
-                sendBtn.disabled = false;
-                welcomeMessage.style.display = 'none';
-                
-                // Save user
-                saveCurrentUser(user);
-                addUser(user);
-                
-                // Add welcome message
-                addSystemMessage(`${user.name} bergabung dalam chat! 🎉`);
-                
-                // Load previous messages
-                loadMessages();
-                
-                // Update online users
-                updateOnlineUsers();
-                
-                // Focus on message input
-                messageInput.focus();
-            }
-            
-            // Add user to storage
-            function addUser(user) {
-                const data = getData();
-                const existingUserIndex = data.users.findIndex(u => u.id === user.id);
-                
-                if (existingUserIndex === -1) {
-                    data.users.push(user);
-                } else {
-                    data.users[existingUserIndex] = user;
-                }
-                
-                saveData(data);
-                saveCurrentUser(user);
-            }
-            
-            // Send message function
-            function sendMessage() {
-                const text = messageInput.value.trim();
-                if (text === '' || !currentUser) return;
-                
-                const message = {
-                    id: Date.now().toString(),
-                    sender: currentUser.name,
-                    senderId: currentUser.id,
-                    text: text,
-                    timestamp: new Date()
-                };
-                
-                // Add to storage
-                const data = getData();
-                data.messages.push(message);
-                saveData(data);
-                
-                // Display message
-                displayMessage(message);
-                
-                // Clear input
-                messageInput.value = '';
-                
-                // Scroll to bottom
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                
-                // Trigger storage event for other tabs
-                window.dispatchEvent(new Event('storage'));
-            }
-            
-            // Send button event
-            sendBtn.addEventListener('click', sendMessage);
-            
-            // Enter key in message input
-            messageInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-            
-            // Display message in UI
-            function displayMessage(message) {
-                const messageElement = document.createElement('div');
-                const isOwnMessage = currentUser && message.senderId === currentUser.id;
-                
-                messageElement.classList.add('message');
-                messageElement.classList.add(isOwnMessage ? 'sent' : 'received');
-                
-                const time = new Date(message.timestamp);
-                const timeString = `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`;
-                
-                let messageContent = '';
-                if (!isOwnMessage) {
-                    messageContent += `<div class="message-sender">${message.sender}</div>`;
-                }
-                
-                messageContent += `
-                    ${message.text}
-                    <div class="message-time">${timeString}</div>
-                `;
-                
-                messageElement.innerHTML = messageContent;
-                messagesContainer.appendChild(messageElement);
-            }
-            
-            // Add system message
-            function addSystemMessage(text) {
-                const message = {
-                    id: Date.now().toString(),
-                    sender: 'System',
-                    senderId: 'system',
-                    text: text,
-                    timestamp: new Date()
-                };
-                
-                const data = getData();
-                data.messages.push(message);
-                saveData(data);
-                
-                displayMessage(message);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                window.dispatchEvent(new Event('storage'));
-            }
-            
-            // Load messages from storage
-            function loadMessages() {
-                const data = getData();
-                // Clear only non-system messages
-                const messageElements = messagesContainer.querySelectorAll('.message:not(.system-message)');
-                messageElements.forEach(el => el.remove());
-                
-                data.messages.forEach(message => {
-                    if (message.senderId !== 'system') {
-                        displayMessage(message);
-                    }
-                });
-                
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-            
-            // Update online users count
-            function updateOnlineUsers() {
-                const data = getData();
-                const now = new Date();
-                const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
-                
-                const activeUsers = data.users.filter(user => 
-                    new Date(user.lastSeen) > fiveMinutesAgo
-                );
-                
-                onlineCount.textContent = `${activeUsers.length} orang online`;
-            }
-            
-            // Storage event listener (for cross-tab communication)
-            window.addEventListener('storage', function() {
-                loadMessages();
-                updateOnlineUsers();
-                
-                const data = getData();
-                if (data.messages.length > messages.length) {
-                    const newMessages = data.messages.slice(messages.length);
-                    const lastMessage = newMessages[newMessages.length - 1];
-                    
-                    if (lastMessage.senderId !== currentUser.id && document.hidden) {
-                        showNotification(lastMessage.sender);
-                    }
-                    
-                    messages = data.messages;
-                }
-            });
-            
-            // Show notification
-            function showNotification(sender) {
-                notificationSender.textContent = sender;
-                notification.classList.add('show');
-                
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 3000);
-            }
-            
-            // Update last seen periodically
-            setInterval(() => {
-                if (currentUser) {
-                    currentUser.lastSeen = new Date();
-                    addUser(currentUser);
-                    updateOnlineUsers();
-                }
-            }, 60000);
-            
-            // Initialize
-            const data = getData();
-            messages = data.messages;
-            updateOnlineUsers();
-            
-            // Load any existing messages
-            if (savedUser) {
-                loadMessages();
-            }
-        });
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function showNotification() {
+            const notif = document.getElementById('notif');
+            notif.style.display = 'block';
+            setTimeout(() => notif.style.display = 'none', 3000);
+        }
+        
+        function getTime() {
+            const now = new Date();
+            return `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+        }
+        
+        // Enter to login
+        document.getElementById('nameInput').onkeypress = function(e) {
+            if (e.key === 'Enter') document.getElementById('loginBtn').click();
+        };
     </script>
 </body>
 </html>
