@@ -1,13 +1,8 @@
 {
-  "name": "chatapp-vercel",
+  "name": "chatapp-lite",
   "version": "1.0.0",
-  "description": "Website chat real-time sederhana",
   "main": "index.html",
   "scripts": {
-    "dev": "python3 -m http.server 3000",
-    "start": "python3 -m http.server 3000"
-  },
-  "keywords": ["chat", "real-time", "whatsapp-like"],
-  "author": "You",
-  "license": "MIT"
+    "dev": "python3 -m http.server 3000"
+  }
 }
